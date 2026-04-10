@@ -55,6 +55,19 @@ img { max-width: 100%; display: block; }
   color: var(--text);
   font-weight: 700;
 }
+
+
+.nav-auth {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.nav-greeting {
+  font-weight: 800;
+  color: var(--primary-dark);
+}
 .menu-btn {
   display: none;
   border: 0;
@@ -254,6 +267,11 @@ h2 {
     box-shadow: var(--shadow);
     padding: 16px;
     display: none;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .nav-auth {
     flex-direction: column;
     align-items: stretch;
   }

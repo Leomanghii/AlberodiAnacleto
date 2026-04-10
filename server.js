@@ -233,7 +233,7 @@ app.delete('/api/events/:id', authRequired, requireRole('admin', 'teacher'), (re
   res.json({ message: 'Evento eliminato' });
 });
 
-app.get('/api/notices', authRequired, requireRole('admin'), (req, res) => {
+app.get('/api/notices', authRequired, requireRole('admin', 'teacher'), (req, res) => {
   const notices = db.prepare(`
     SELECT id, title, content, created_at
     FROM notices
@@ -242,7 +242,7 @@ app.get('/api/notices', authRequired, requireRole('admin'), (req, res) => {
   res.json(notices);
 });
 
-app.post('/api/notices', authRequired, requireRole('admin'), (req, res) => {
+app.post('/api/notices', authRequired, requireRole('admin', 'teacher'), (req, res) => {
   const { title, content } = req.body;
   if (!title || !content) {
     return res.status(400).json({ message: 'Titolo e contenuto obbligatori' });
@@ -257,7 +257,7 @@ app.post('/api/notices', authRequired, requireRole('admin'), (req, res) => {
   res.status(201).json(created);
 });
 
-app.put('/api/notices/:id', authRequired, requireRole('admin'), (req, res) => {
+app.put('/api/notices/:id', authRequired, requireRole('admin', 'teacher'), (req, res) => {
   const { id } = req.params;
   const current = db.prepare('SELECT * FROM notices WHERE id = ?').get(id);
   if (!current) {
@@ -276,7 +276,7 @@ app.put('/api/notices/:id', authRequired, requireRole('admin'), (req, res) => {
   res.json(updated);
 });
 
-app.delete('/api/notices/:id', authRequired, requireRole('admin'), (req, res) => {
+app.delete('/api/notices/:id', authRequired, requireRole('admin', 'teacher'), (req, res) => {
   const { id } = req.params;
   const current = db.prepare('SELECT * FROM notices WHERE id = ?').get(id);
   if (!current) {

@@ -31,7 +31,12 @@
           <a href="#famiglie">Famiglie</a>
           <a href="#iscrizioni">Iscrizioni</a>
           <a href="#contatti">Contatti</a>
-          <button id="openLoginBtn" class="btn btn-primary" type="button">Login personale</button>
+          <div class="nav-auth" id="navAuthArea">
+            <span id="navGreeting" class="nav-greeting hidden"></span>
+            <button id="manageBtn" class="btn btn-secondary hidden" type="button">Gestione</button>
+            <button id="logoutNavBtn" class="btn btn-secondary hidden" type="button">Logout</button>
+            <button id="openLoginBtn" class="btn btn-primary" type="button">Login personale</button>
+          </div>
         </nav>
 
         <button class="menu-btn" id="menuBtn" type="button" aria-label="Apri menu">☰</button>
@@ -214,7 +219,7 @@
           <div class="dashboard-tabs">
             <button class="tab-btn active" data-tab="eventsPanel" type="button">Orario</button>
             <button class="tab-btn admin-only hidden" data-tab="staffPanel" type="button">Personale</button>
-            <button class="tab-btn admin-only hidden" data-tab="noticesPanel" type="button">Avvisi</button>
+            <button class="tab-btn" data-tab="noticesPanel" type="button">Avvisi</button>
           </div>
 
           <div id="eventsPanel" class="panel active">

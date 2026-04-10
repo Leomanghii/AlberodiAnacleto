@@ -73,10 +73,34 @@ function closeLogin() {
   $('#loginModal').classList.add('hidden');
 }
 
+function updateNavAuth() {
+  const loggedIn = Boolean(state.me);
+  $('#openLoginBtn').classList.toggle('hidden', loggedIn);
+  $('#logoutNavBtn').classList.toggle('hidden', !loggedIn);
+  $('#manageBtn').classList.toggle('hidden', !loggedIn);
+
+  const greeting = $('#navGreeting');
+  if (loggedIn) {
+    greeting.textContent = `Ciao, ${state.me.first_name}`;
+    greeting.classList.remove('hidden');
+  } else {
+    greeting.textContent = '';
+    greeting.classList.add('hidden');
+  }
+}
+
+function scrollToManagement() {
+  const dashboard = $('#dashboard');
+  if (!dashboard.classList.contains('hidden')) {
+    dashboard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
 function renderDashboard() {
   const dashboard = $('#dashboard');
   if (!state.me) {
     dashboard.classList.add('hidden');
+    updateNavAuth();
     return;
   }
 
@@ -87,6 +111,8 @@ function renderDashboard() {
   adminOnly.forEach(el => {
     el.classList.toggle('hidden', state.me.role !== 'admin');
   });
+
+  updateNavAuth();
 }
 
 function renderEventsList() {
@@ -140,13 +166,16 @@ function renderNoticesList() {
 
 async function loadPrivateData() {
   state.events = await api('/api/events');
+  state.notices = await api('/api/notices');
   renderEventsList();
+  renderNoticesList();
 
   if (state.me.role === 'admin') {
     state.users = await api('/api/users');
-    state.notices = await api('/api/notices');
     renderStaffList();
-    renderNoticesList();
+  } else {
+    state.users = [];
+    renderStaffList();
   }
 }
 
@@ -211,6 +240,7 @@ async function checkSession() {
   } catch {
     state.me = null;
     renderDashboard();
+    updateNavAuth();
   }
 }
 
@@ -240,17 +270,25 @@ function bindForms() {
       toast('Login effettuato');
       renderDashboard();
       await loadPrivateData();
+      scrollToManagement();
     } catch (error) {
       toast(error.message);
     }
   });
 
-  $('#logoutBtn').addEventListener('click', async () => {
+  const logout = async () => {
     await api('/api/logout', { method: 'POST' });
     state.me = null;
+    state.users = [];
+    state.events = [];
+    state.notices = [];
     renderDashboard();
+    updateNavAuth();
     toast('Logout effettuato');
-  });
+  };
+
+  $('#logoutBtn').addEventListener('click', logout);
+  $('#logoutNavBtn').addEventListener('click', logout);
 
   $('#eventForm').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -346,6 +384,7 @@ function bindForms() {
 function bindUi() {
   $('#openLoginBtn').addEventListener('click', openLogin);
   $('#closeLoginBtn').addEventListener('click', closeLogin);
+  $('#manageBtn').addEventListener('click', scrollToManagement);
   $('#loginModal').addEventListener('click', (e) => {
     if (e.target.id === 'loginModal') closeLogin();
   });
@@ -358,6 +397,7 @@ async function init() {
   bindUi();
   bindForms();
   bindTabs();
+  updateNavAuth();
   await loadPublicData();
   await checkSession();
 }
